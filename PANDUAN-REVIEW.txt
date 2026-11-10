@@ -1,0 +1,22 @@
+PLUSIFY - FITUR RATING & REVIEW
+
+APA YANG BARU
+- reviews.html          : halaman ulasan (ringkasan bintang, filter, daftar, form tulis ulasan)
+- js/reviews.js         : logika fitur
+- supabase-reviews.sql  : tabel database (jalankan sekali di Supabase)
+- Bintang rating muncul di kartu produk, di popup produk, di beranda, dan tombol "Beri ulasan" di Profile.
+
+CARA PASANG
+1. Drag semua file ke repo GitHub (timpa yang lama). Vercel otomatis deploy.
+   Tanpa langkah 2-4, fitur tetap jalan tapi MODE DEMO (ulasan hanya tersimpan di browser sendiri).
+
+AGAR ULASAN TAMPIL UNTUK SEMUA PENGUNJUNG (gratis):
+2. Daftar di supabase.com > New project.
+3. SQL Editor > New query > paste isi supabase-reviews.sql > Run.
+4. Project Settings > API: salin "Project URL" dan key "anon public", tempel di js/config.js
+   (REVIEWS.SUPABASE_URL dan REVIEWS.SUPABASE_ANON_KEY). Commit ke GitHub.
+
+KELOLA ULASAN
+- Hapus ulasan spam: Supabase > Table Editor > reviews > hapus baris.
+- Mau moderasi dulu: set NEEDS_APPROVAL: true di config.js dan ikuti catatan di akhir file .sql.
+  Ulasan baru muncul setelah kolom "approved" kamu ubah jadi true.
