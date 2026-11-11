@@ -1,0 +1,14 @@
+.stars{color:#f5a623;letter-spacing:1px;white-space:nowrap}.stars .off{color:#ddd7ee}
+.rate-line{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);margin:2px 0 4px}.rate-line b{color:var(--ink)}.rate-line a:hover{color:var(--purple)}
+.rv-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;align-items:start}
+.rv-sum{display:flex;gap:22px;align-items:center;flex-wrap:wrap}.rv-big{font:800 56px Manrope;color:var(--purple);line-height:1}
+.rv-bars{flex:1;min-width:180px;display:grid;gap:6px}.rv-bar{display:grid;grid-template-columns:16px 1fr 28px;gap:8px;align-items:center;font-size:12px;color:var(--muted)}.rv-bar i{display:block;height:8px;border-radius:8px;background:var(--pale);overflow:hidden}.rv-bar i span{display:block;height:100%;background:#f5a623}
+.rv-list{display:grid;gap:12px;margin-top:16px}
+.rv-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}.rv-item .top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.rv-item p{margin:8px 0 0;line-height:1.65;white-space:pre-wrap;word-break:break-word}.rv-meta{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--muted);margin-top:4px}
+.rv-prod{display:inline-flex;gap:6px;align-items:center;background:var(--pale);color:var(--purple);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700}
+.rv-filter{width:100%;padding:13px;border:1px solid var(--line);border-radius:9px;background:#fff;font:inherit}
+.starpick{display:flex;gap:4px;margin-top:7px}.starpick button{border:0;background:none;font-size:34px;line-height:1;color:#ddd7ee;cursor:pointer;padding:0}.starpick button.on{color:#f5a623}
+.rv-msg{padding:12px 14px;border-radius:10px;margin-top:12px;font-size:14px}.rv-msg.ok{background:#e9f9ee;color:#1d7a3a}.rv-msg.err{background:#fff0f0;color:#b44}
+.hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden}
+.rv-home{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:20px}
+@media(max-width:900px){.rv-grid{grid-template-columns:1fr}.rv-home{grid-template-columns:1fr}}

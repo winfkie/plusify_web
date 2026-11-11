@@ -1,0 +1,46 @@
+PANDUAN SETUP PLUSIFY v5
+========================
+
+A. GOOGLE ANALYTICS (kenapa kemarin grafiknya kosong?)
+------------------------------------------------------
+Menghubungkan akun GA saja belum cukup. Website harus memuat kode tracking, kalau tidak GA tidak menerima data sama sekali.
+Penyebab umum grafik kosong:
+ 1. Kode tracking belum terpasang di website (paling sering).
+ 2. ID masih "G-XXXXXXXXXX" / salah ketik / ID bukan dari Web stream.
+ 3. Perubahan belum di-upload ke GitHub / belum selesai deploy.
+ 4. Terlalu cepat dicek: laporan biasa baru terisi 24-48 jam. Pakai Reports > Realtime untuk cek instan.
+ 5. Pengunjung memakai adblock, atau tracking diblok browser (buka lewat jendela biasa tanpa adblock saat tes).
+
+Cara pasang (sudah disiapkan, tinggal 1 langkah):
+ 1. Di Google Analytics: Admin > Data streams > klik stream web kamu > salin "Measurement ID" (bentuknya G-AB12CD34EF).
+    Pastikan URL stream sama dengan alamat websitemu.
+ 2. Buka js/analytics.js, ganti G-XXXXXXXXXX dengan Measurement ID kamu. Simpan.
+    (File ini sudah dipanggil di <head> SEMUA halaman, jadi tidak perlu edit HTML satu-satu.)
+ 3. Upload semua file ke GitHub, tunggu deploy selesai.
+ 4. Buka websitemu, lalu cek GA > Reports > Realtime. Kunjunganmu harus muncul dalam beberapa detik.
+Event yang ikut tercatat otomatis: page_view, add_to_cart, begin_checkout, referral_applied, click_whatsapp_admin.
+
+B. KODE REFERRAL
+----------------
+Ada di halaman Pembayaran, di atas tombol WhatsApp. Hanya 5 kode ini yang valid (tidak peduli huruf besar/kecil):
+ PLFY-8K2M9, PLFY-7X4N2, PLFY-5Q9R3, PLFY-6T2P8, PLFY-9W3L5
+Kode lain = "Kode referral tidak valid" dan tombol WhatsApp tidak bisa dilanjutkan sampai kolom dikosongkan atau diganti kode yang benar.
+Template chat menampilkan "Kode referral: <kode>" atau "Kode referral: -" jika kosong.
+Mengganti daftar kode: js/config.js > REFERRAL_CODES.
+Catatan: pengecekan ini jalan di browser, jadi kode bisa terlihat oleh orang yang membuka source code website. Tetap cek kode di chat WA sebelum memberi benefit.
+Kode referral tidak mengubah harga (hanya informasi untuk admin).
+
+C. RATING & REVIEW (sudah aktif otomatis, tanpa setup)
+------------------------------------------------------
+Sudah langsung ada di website: menu "Ulasan", bintang rating di setiap kartu produk, bagian "Ulasan Pelanggan" di beranda,
+dan halaman reviews.html (ringkasan rating, filter per produk, form tulis ulasan).
+Cara kerjanya:
+ - Pembeli mengisi form (produk, bintang, nama, ulasan) lalu ulasan terkirim ke WhatsApp admin dengan template otomatis.
+ - Setelah kamu cek, tambahkan ulasan itu ke js/reviews-data.js (ada contoh formatnya di dalam file). Setelah di-upload ke GitHub,
+   ulasan tampil di website dan rating produk terhitung otomatis.
+ - Ulasan sengaja KOSONG di awal (tulisan "Belum ada ulasan") karena aku tidak membuat ulasan palsu. Isi dengan ulasan asli pembelimu.
+(Opsional, untuk yang mau ulasan masuk otomatis tanpa lewat WA: isi js/reviews-config.js dengan data Firebase. Tidak wajib.)
+
+D. ISI WAJIB LAINNYA (js/config.js)
+-----------------------------------
+Nomor WA admin, QRIS (assets/qris.jpeg), ShopeePay & GoPay sudah terisi sesuai permintaanmu sebelumnya.
