@@ -1,7 +1,5 @@
-/* ========= PENGATURAN ULASAN PLUSIFY =========
-   Ulasan langsung tampil di website (tanpa WhatsApp, tanpa persetujuan admin).
-   Isi 2 data di bawah dari Firebase Console > Project settings > Your apps (Web app). */
+/* ========= PENGATURAN ULASAN PLUSIFY (Google Sheets, tanpa Firebase) =========
+   Ulasan langsung tampil di website dan tersimpan di Google Sheets. */
 window.PLUSIFY_REVIEWS = {
-  PROJECT_ID: "ISI_PROJECT_ID_FIREBASE",   // contoh: "plusify-reviews"
-  API_KEY: "ISI_API_KEY_FIREBASE"          // contoh: "AIzaSy...."
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzzWub0svBoC65BM3fP-bwe6y-EdCEY7wYTWPrW8ulLk-Xd2bkmA7PK4nq8tpOoLQuR/exec"
 };
