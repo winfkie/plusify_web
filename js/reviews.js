@@ -1,7 +1,8 @@
 /* Rating & Review Plusify (Firebase Firestore via REST). Tidak mengubah file lain selain pemanggilnya di app.js */
 (function(){
   const RC = window.PLUSIFY_REVIEWS || {}, P = window.PLUSIFY_PRODUCTS || [];
-  const FB = !!(RC.PROJECT_ID && RC.API_KEY);   // true = pakai Firebase (opsional), false = pakai js/reviews-data.js + kirim lewat WhatsApp
+  const ok = v => !!v && !/^ISI_/i.test(String(v).trim());
+  const FB = ok(RC.PROJECT_ID) && ok(RC.API_KEY);   // true = ulasan disimpan & dibaca dari Firebase (langsung tampil, tanpa WhatsApp)
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const base = `https://firestore.googleapis.com/v1/projects/${RC.PROJECT_ID}/databases/(default)/documents`;
   const stars = (n, size) => { const r = Math.round(n); return `<span class="stars" ${size ? `style="font-size:${size}px"` : ''}>${'★'.repeat(r)}<span class="off">${'★'.repeat(5 - r)}</span></span>` };
@@ -26,7 +27,7 @@
     return cache;
   }
   async function submit(r){
-    const body = {fields:{product:{stringValue:r.product}, rating:{integerValue:String(r.rating)}, name:{stringValue:r.name}, text:{stringValue:r.text}, approved:{booleanValue:RC.AUTO_PUBLISH === true}, createdAt:{timestampValue:new Date().toISOString()}}};
+    const body = {fields:{product:{stringValue:r.product}, rating:{integerValue:String(r.rating)}, name:{stringValue:r.name}, text:{stringValue:r.text}, approved:{booleanValue:true}, createdAt:{timestampValue:new Date().toISOString()}}};
     const res = await fetch(`${base}/reviews?key=${RC.API_KEY}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
     if(!res.ok) throw new Error('submit ' + res.status);
   }
@@ -89,26 +90,19 @@
     form.onsubmit = async e => {
       e.preventDefault(); msg.className = ''; msg.textContent = '';
       const d = Object.fromEntries(new FormData(form)); if(d.website) return;
-      const r = {product:d.product, rating, name:(d.name || '').trim(), text:(d.text || '').trim()};
+      const r = {product:d.product, rating, name:(d.name || '').trim().slice(0,40), text:(d.text || '').trim().slice(0,500)};
       const bad = !names.includes(r.product) ? 'Pilih produk dulu.' : !rating ? 'Pilih rating bintang dulu.' : !r.name ? 'Nama wajib diisi.' : r.text.length < 5 ? 'Ulasan minimal 5 karakter.' : '';
       const done = FB ? jget('plusify_reviewed', []) : [];
       if(bad || done.includes(r.product) || Date.now() - (+localStorage.getItem('plusify_review_last') || 0) < 30000){
         msg.className = 'rv-msg err'; msg.textContent = bad || (done.includes(r.product) ? 'Kamu sudah memberi ulasan untuk produk ini.' : 'Tunggu sebentar sebelum mengirim ulasan lagi.'); return }
-      if(!FB){
-        localStorage.setItem('plusify_review_last', String(Date.now()));
-        const text = ['Halo Admin Plusify, saya ingin mengirim ulasan:', '', `Produk: ${r.product}`, `Rating: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)} (${rating}/5)`, `Nama: ${r.name}`, `Ulasan: ${r.text}`].join('\n');
-        const url = `https://wa.me/${String((window.PLUSIFY_CONFIG || {}).ADMIN_WA || '').replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
-        if(!window.open(url, '_blank')) location.href = url;
-        msg.className = 'rv-msg ok'; msg.textContent = 'Terima kasih! Ulasanmu dikirim ke admin lewat WhatsApp dan akan tampil setelah diverifikasi.';
-        form.reset(); rating = 0; paintStars(); return;
-      }
+      if(!FB){ msg.className = 'rv-msg err'; msg.textContent = 'Fitur ulasan belum dikonfigurasi. Hubungi admin.'; return }
       const btn = form.querySelector('button[type=submit]'); btn.disabled = true; btn.textContent = 'Mengirim...';
       try{
         await submit(r);
         done.push(r.product); localStorage.setItem('plusify_reviewed', JSON.stringify(done)); localStorage.setItem('plusify_review_last', String(Date.now()));
-        msg.className = 'rv-msg ok'; msg.textContent = RC.AUTO_PUBLISH === true ? 'Terima kasih! Ulasanmu sudah tayang.' : 'Terima kasih! Ulasanmu akan tampil setelah dicek admin.';
+        msg.className = 'rv-msg ok'; msg.textContent = 'Terima kasih! Ulasanmu sudah tayang.';
         form.reset(); rating = 0; paintStars();
-        if(RC.AUTO_PUBLISH === true){ cache = null; list = await load(true); draw() }
+        try{ list = await load(true) }catch(_){ list = [{product:r.product, rating:r.rating, name:r.name, text:r.text, date:new Date().toISOString()}, ...list] } draw();
       }catch(err){ msg.className = 'rv-msg err'; msg.textContent = 'Gagal mengirim ulasan. Coba lagi nanti.' }
       btn.disabled = false; btn.textContent = 'Kirim Ulasan';
     };
